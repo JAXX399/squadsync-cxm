@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { collection, onSnapshot, query, where, addDoc, documentId } from 'firebase/firestore';
 
-const Sidebar = ({ currentTrip, user, onExitTrip }) => {
+const Sidebar = ({ currentTrip, user, onExitTrip, currentView, setCurrentView }) => {
     const [members, setMembers] = useState([]);
 
     useEffect(() => {
@@ -59,6 +59,42 @@ const Sidebar = ({ currentTrip, user, onExitTrip }) => {
                 }}>
                     {currentTrip.name}
                 </h3>
+
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <button
+                    onClick={() => setCurrentView('calendar')}
+                    style={{
+                        padding: '12px',
+                        background: currentView === 'calendar' ? 'var(--text-accent)' : 'rgba(255,255,255,0.05)',
+                        color: currentView === 'calendar' ? '#000' : '#fff',
+                        border: 'none',
+                        borderRadius: '12px',
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        fontWeight: '600',
+                        display: 'flex', alignItems: 'center', gap: '8px'
+                    }}
+                >
+                    📅 Calendar
+                </button>
+                <button
+                    onClick={() => setCurrentView('expenses')}
+                    style={{
+                        padding: '12px',
+                        background: currentView === 'expenses' ? 'var(--text-accent)' : 'rgba(255,255,255,0.05)',
+                        color: currentView === 'expenses' ? '#000' : '#fff',
+                        border: 'none',
+                        borderRadius: '12px',
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        fontWeight: '600',
+                        display: 'flex', alignItems: 'center', gap: '8px'
+                    }}
+                >
+                    💸 Expenses
+                </button>
             </div>
 
             <div>
@@ -95,7 +131,7 @@ const Sidebar = ({ currentTrip, user, onExitTrip }) => {
                     + Invite Friend
                 </button>
             </div>
-        </aside>
+        </aside >
     );
 };
 

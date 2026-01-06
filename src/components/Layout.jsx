@@ -6,10 +6,10 @@ const Layout = ({ children }) => {
       <header className="glass-panel header">
         <div className="logo">
           <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-accent)' }}>
-            Trip<span style={{ color: 'var(--text-primary)' }}>Planner</span>
+            Squad<span style={{ color: 'var(--text-primary)' }}> Sync</span>
           </h1>
         </div>
-        
+
         <div className="user-controls" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <button className="btn-icon" title="Notifications">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -18,11 +18,11 @@ const Layout = ({ children }) => {
             </svg>
           </button>
           <div className="avatar glass-panel" style={{ padding: '0.5rem 1rem', borderRadius: '50px' }}>
-             Israr
+            Israr
           </div>
         </div>
       </header>
-      
+
       <main className="main-content" style={{ display: 'flex', gap: 'var(--spacing-lg)', flex: 1 }}>
         {children}
       </main>

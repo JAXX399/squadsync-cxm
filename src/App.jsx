@@ -6,6 +6,7 @@ import StatusModal from './components/StatusModal';
 import Login from './components/Login';
 import CreateProfile from './components/CreateProfile';
 import Dashboard from './components/Dashboard';
+import Expenses from './components/Expenses';
 import { auth, db } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, onSnapshot, query, doc, where } from 'firebase/firestore';
@@ -17,8 +18,29 @@ function App() {
   const [authLoading, setAuthLoading] = useState(true);
 
   // Navigation State
-  const [currentTrip, setCurrentTrip] = useState(null); // If null -> Show Dashboard
+  const [currentTrip, setCurrentTrip] = useState(() => {
+    const saved = localStorage.getItem('squadSync_currentTrip');
+    return saved ? JSON.parse(saved) : null;
+  }); // If null -> Show Dashboard
+
+  const [currentView, setCurrentView] = useState(() => {
+    return localStorage.getItem('squadSync_currentView') || 'calendar';
+  }); // 'calendar' | 'expenses'
+
   const [showAdmin, setShowAdmin] = useState(false);
+
+  // Persistence Effects
+  useEffect(() => {
+    if (currentTrip) {
+      localStorage.setItem('squadSync_currentTrip', JSON.stringify(currentTrip));
+    } else {
+      localStorage.removeItem('squadSync_currentTrip');
+    }
+  }, [currentTrip]);
+
+  useEffect(() => {
+    localStorage.setItem('squadSync_currentView', currentView);
+  }, [currentView]);
 
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
@@ -107,7 +129,13 @@ function App() {
 
   return (
     <Layout>
-      <Sidebar currentTrip={currentTrip} user={user} onExitTrip={() => setCurrentTrip(null)} />
+      <Sidebar
+        currentTrip={currentTrip}
+        user={user}
+        onExitTrip={() => { setCurrentTrip(null); setCurrentView('calendar'); }}
+        currentView={currentView}
+        setCurrentView={setCurrentView}
+      />
       <div className="glass-panel content-area" style={{
         flex: 1,
         padding: 'var(--spacing-lg)',
@@ -137,13 +165,18 @@ function App() {
         </div>
 
         <div style={{ flex: 1, minHeight: 0 }}>
-          <Calendar
-            currentYear={currentDate.getFullYear()}
-            currentMonth={currentDate.getMonth()}
-            statuses={statuses}
-            onDayClick={handleDateClick}
-            selectedDate={selectedDate}
-          />
+
+          {currentView === 'expenses' ? (
+            <Expenses currentTrip={currentTrip} user={user} />
+          ) : (
+            <Calendar
+              currentYear={currentDate.getFullYear()}
+              currentMonth={currentDate.getMonth()}
+              statuses={statuses}
+              onDayClick={handleDateClick}
+              selectedDate={selectedDate}
+            />
+          )}
         </div>
       </div>
 

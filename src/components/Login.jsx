@@ -107,7 +107,7 @@ const Login = () => {
                         WebkitTextFillColor: 'transparent',
                         textShadow: '0 10px 30px rgba(0,0,0,0.5)'
                     }}>
-                        SquadSync
+                        Squad Sync
                     </h1>
                     <p style={{
                         color: 'rgba(255,255,255,0.6)',

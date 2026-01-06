@@ -129,6 +129,17 @@ const Dashboard = ({ user, onSelectTrip, onAdminClick }) => {
             {/* Header Section */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4rem' }}>
                 <div>
+                    <h2 style={{
+                        fontSize: '1rem',
+                        fontWeight: '600',
+                        textTransform: 'uppercase',
+                        letterSpacing: '2px',
+                        color: 'var(--text-accent)',
+                        marginBottom: '0.5rem',
+                        opacity: 0.8
+                    }}>
+                        Squad Sync
+                    </h2>
                     <h1 style={{
                         fontSize: '3rem',
                         marginBottom: '0.5rem',
