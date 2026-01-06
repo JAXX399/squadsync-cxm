@@ -4,25 +4,67 @@
 
 SquadSync transforms chaotic group chat planning into a sleek, real-time dashboard. Coordinate availability, manage multiple trips, and sync up with your friends efficiently.
 
-[**🔴 Live Demo: https://squadsync-cxm.vercel.app**](https://squadsync-cxm.vercel.app/)
+# Squad Sync 🌍✈️
+> **The Ultimate Group Trip Planner & Expense Tracker**
 
-![SquadSync Banner](https://via.placeholder.com/1200x400?text=SquadSync+Dashboard+Preview)
+**Squad Sync** is a modern, real-time collaboration tool designed to make group travel seamless. From coordinating availabilities on a shared calendar to splitting costs with an intelligent debt settlement algorithm, Squad Sync keeps your trip organized and your friendships intact.
+
+---
+
+## 🚀 Live Demo
+**[Launch App](https://squadsync-cxm.vercel.app/)**
+
+---
 
 ## ✨ Key Features
 
-- **Real-Time Availability Sync**: Mark yourself as "Free" or "Busy" for specific dates. Updates appear instantly for everyone.
-- **Group Trip Management**: Organize multiple trips (Goa 2026, Family Reunion, etc.) with isolated calendars.
-- **Invites & Joining**: Invite friends securely via User ID or share a **Trip ID** for instant access.
-- **Admin Dashboard**: Powerful control panel to manage users, trips, and perform system-wide resets.
-- **Google Authentication**: fast and secure sign-in with your existing Google account.
-- **Glassmorphism UI**: A premium, modern interface designed for a delightful user experience.
+### 🗓️ Smart Calendar
+*   **Real-time Availability**: Statuses (Available, Busy, Maybe) sync instantly across all devices.
+*   **Heatmap Visualization**: Easily spot the best dates for the whole group.
+*   **Interactive UI**: "Black Marble" glassmorphism design with fluid animations.
+
+### 💸 Intelligent Expense Tracking (New!)
+*   **Group Split**: Log expenses in multiple currencies (USD, EUR, GBP, etc.).
+*   **Debt Settlement Engine**: Automatically calculates **"Who Owes Whom"** to simplify payback.
+    *   *Example: "John pays Sarah $50"* instead of confusing spreadsheets.
+*   **Live Balances**: See your net standing (Owed vs. Owe) in real-time.
+
+### 👥 Group Management
+*   **Trip IDs**: Join trips instantly by sharing a unique 6-character code.
+*   **Admin Dashboard**: Powerful controls to manage users, wipe data, or reset calendars (`cxm123`).
+*   **Secure Authentication**: Powered by Firebase & Google Sign-In.
+
+---
 
 ## 🛠️ Tech Stack
+*   **Frontend**: React.js (Vite), Glassmorphism UI
+*   **Backend**: Firebase (Firestore, Auth)
+*   **Deployment**: Vercel
 
-- **Frontend**: React.js + Vite
-- **Styling**: Vanilla CSS (Glassmorphism Design System)
-- **Backend / Database**: Google Firebase (Firestore & Auth)
-- **Hosting**: Firebase Hosting / Vercel (Ready to deploy)
+---
+
+## 📦 Installation
+1.  **Clone the repo**
+    ```bash
+    git clone https://github.com/JAXX399/squadsync-cxm.git
+    cd squadsync-cxm
+    ```
+2.  **Install dependencies**
+    ```bash
+    npm install
+    ```
+3.  **Run locally**
+    ```bash
+    npm run dev
+    ```
+
+## 🔐 Admin Access
+*   **Password**: *Check source code or ask admin*
+*   **Capabilities**: Wipe all expenses, reset calendars, remove users.
+
+---
+
+Made with ❤️ by JAXX399
 
 ## 🚀 Getting Started
 
