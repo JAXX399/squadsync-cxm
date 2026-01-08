@@ -36,31 +36,6 @@ SquadSync transforms chaotic group travel into a seamless, real-time experience.
 
 ---
 
-## � Future Roadmap (Recommendations)
-Here are some features that could take SquadSync to the next level:
-
-1.  **🤖 AI Itinerary Generator**  
-    *   *Idea*: Use Gemini API to generate daily itineraries based on the group's destination and dates.
-    *   *Why*: Fills the gap between "planning dates" and "tracking expenses".
-
-2.  **� Real-time Trip Chat**  
-    *   *Idea*: A dedicated chat room for each trip so you don't have to switch to WhatsApp.
-    *   *Why*: Keeps context (e.g., discussing a specific expense) in one place.
-
-3.  **🗳️ Polls for Decision Making**  
-    *   *Idea*: Simple voting for "Where to eat?" or "Which Airbnb?".
-    *   *Why*: Faster consensus than endless chat debates.
-
-4.  **🧾 AI Receipt Scanning**  
-    *   *Idea*: Upload a photo of a bill, and OCR extracts the items and prices.
-    *   *Why*: Reduces manual entry friction for long restaurant bills.
-
-5.  **📍 Map Integration**  
-    *   *Idea*: Pin locations (Hotel, Spots) on a shared map.
-    *   *Why*: Visualizes the trip logistics.
-
----
-
 ## 🛠️ Tech Stack
 *   **Frontend**: React.js (Vite), Glassmorphism UI, Framer Motion
 *   **Backend**: Firebase (Firestore, Auth)
