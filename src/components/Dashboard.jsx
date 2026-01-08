@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { db, auth } from '../firebase';
 import { collection, query, where, onSnapshot, addDoc, doc, updateDoc, arrayUnion, getDoc } from 'firebase/firestore';
+import { LogOut, Wallet, ChevronDown, Copy, Plus } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+import ProfileDashboard from './ProfileDashboard';
 
 const Dashboard = ({ user, onSelectTrip, onAdminClick }) => {
     const [trips, setTrips] = useState([]);
     const [invites, setInvites] = useState([]);
     const [isCreating, setIsCreating] = useState(false);
     const [isJoining, setIsJoining] = useState(false);
+    const [showProfile, setShowProfile] = useState(false);
     const [newTripName, setNewTripName] = useState('');
     const [joinTripId, setJoinTripId] = useState('');
+    const [showMenu, setShowMenu] = useState(false);
 
     // 1. Fetch My Trips
     useEffect(() => {
@@ -150,24 +156,77 @@ const Dashboard = ({ user, onSelectTrip, onAdminClick }) => {
                     }}>
                         Hello, <span style={{ fontWeight: '600' }}>{user.displayName?.split(' ')[0] || 'Traveler'}</span>
                     </h1>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', opacity: 0.8 }}>
-                        <span style={{ color: 'var(--text-secondary)' }}>ID:</span>
-                        <code style={{ background: 'rgba(255,255,255,0.05)', padding: '6px 10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                            {user.uid.substring(0, 8)}...
-                        </code>
-                        <button id="copy-btn" onClick={copyUserId} className="btn-icon" style={{ fontSize: '0.8rem', padding: '6px 12px', borderRadius: '20px', background: 'var(--glass-surface)' }}>
-                            Copy
-                        </button>
-                    </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                    <img src={user.photoURL} style={{ width: 48, height: 48, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.2)' }} alt="" />
-                    <button className="btn-icon" onClick={() => auth.signOut()}>Sign Out</button>
+                <div style={{ position: 'relative' }}>
+                    <div 
+                        onClick={() => setShowMenu(!showMenu)}
+                        style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', background: 'rgba(255,255,255,0.05)', padding: '6px 12px 6px 6px', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.1)' }}
+                        className="hover-card"
+                    >
+                        <img src={user.photoURL} style={{ width: 40, height: 40, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.2)' }} alt="" />
+                        <ChevronDown size={16} style={{ color: 'var(--text-secondary)', transition: 'transform 0.2s', transform: showMenu ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+                    </div>
+
+                    <AnimatePresence>
+                    {showMenu && (
+                        <motion.div 
+                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                            transition={{ duration: 0.2 }}
+                            style={{
+                                position: 'absolute',
+                                top: '120%',
+                                right: 0,
+                                width: '260px',
+                                background: '#1e293b',
+                                border: '1px solid var(--glass-border)',
+                                borderRadius: '16px',
+                                padding: '1rem',
+                                boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
+                                zIndex: 100
+                            }}
+                        >
+                            <div style={{ paddingBottom: '1rem', marginBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                                <div style={{ fontWeight: 'bold', fontSize: '1.1rem', marginBottom: '4px' }}>{user.displayName}</div>
+                                <div 
+                                    onClick={() => { navigator.clipboard.writeText(user.uid); alert("ID Copied!"); }}
+                                    style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', opacity: 0.6, cursor: 'pointer' }}
+                                    title="Click to Copy ID"
+                                >
+                                    <span style={{ fontFamily: 'monospace' }}>{user.uid.substring(0, 10)}...</span>
+                                    <Copy size={12} />
+                                </div>
+                            </div>
+
+                            <button 
+                                onClick={() => { setShowProfile(true); setShowMenu(false); }}
+                                style={{ width: '100%', textAlign: 'left', padding: '12px', background: 'transparent', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px', borderRadius: '8px', fontSize: '0.95rem' }}
+                                className="hover-bg"
+                            >
+                                <Wallet size={18} color="#4ade80" />
+                                My Wallet
+                            </button>
+                             <button 
+                                onClick={() => auth.signOut()}
+                                style={{ width: '100%', textAlign: 'left', padding: '12px', background: 'transparent', border: 'none', color: '#ff4d4d', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px', borderRadius: '8px', marginTop: '4px', fontSize: '0.95rem' }}
+                                className="hover-bg"
+                            >
+                                <LogOut size={18} />
+                                Sign Out
+                            </button>
+                        </motion.div>
+                    )}
+                    </AnimatePresence>
                 </div>
             </div>
 
-            {/* Invites Section */}
+            {showProfile ? (
+                 <ProfileDashboard user={user} onBack={() => setShowProfile(false)} />
+            ) : (
+                <>
+                {/* Invites Section */}
             {invites.length > 0 && (
                 <div style={{ marginBottom: '4rem', animation: 'slideIn 0.5s ease' }}>
                     <h3 style={{ borderBottom: '1px solid var(--glass-border)', paddingBottom: '1rem', marginBottom: '1.5rem', color: '#ffbd2e', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -190,9 +249,9 @@ const Dashboard = ({ user, onSelectTrip, onAdminClick }) => {
             )}
 
             {/* Trips Section */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+            <div className="dashboard-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                 <h3 style={{ fontSize: '1.8rem', fontWeight: '400' }}>Your Adventures</h3>
-                <div style={{ display: 'flex', gap: '1rem' }}>
+                <div className="dashboard-actions" style={{ display: 'flex', gap: '1rem' }}>
                     <button className="btn-icon" onClick={() => { setIsJoining(!isJoining); setIsCreating(false); }} style={{ padding: '12px 24px', borderRadius: '12px', fontSize: '1rem', border: '1px solid var(--glass-border)' }}>
                         🔗 Join via ID
                     </button>
@@ -232,7 +291,7 @@ const Dashboard = ({ user, onSelectTrip, onAdminClick }) => {
                 </div>
             )}
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '2rem' }}>
+            <div className="trip-card-grid">
                 {trips.length === 0 ? (
                     <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '5rem', border: '2px dashed var(--glass-border)', borderRadius: 'var(--radius-lg)', color: 'var(--text-secondary)' }}>
                         <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🌍</div>
@@ -308,6 +367,8 @@ const Dashboard = ({ user, onSelectTrip, onAdminClick }) => {
                     Admin Portal
                 </button>
             </div>
+            </>
+            )}
 
         </div>
     );
