@@ -61,7 +61,7 @@ SquadSync transforms chaotic group travel into a seamless, real-time experience.
     ```
 
 ## � Admin Access
-* **Password**: Ask admin
+**Password**: Ask admin 
 **Capabilities**: Wipe all expenses, reset calendars, remove users.
 ---
 
