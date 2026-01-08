@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db, auth } from '../firebase';
-import { collection, getDocs, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc, query, orderBy, updateDoc } from 'firebase/firestore';
+import { Edit2 } from 'lucide-react';
 
 const AdminDashboard = ({ onExit }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -9,6 +10,43 @@ const AdminDashboard = ({ onExit }) => {
     const [users, setUsers] = useState([]);
     const [trips, setTrips] = useState([]);
     const [stats, setStats] = useState({ users: 0, trips: 0, statuses: 0 });
+    
+    // Weight Management State
+    const [selectedTrip, setSelectedTrip] = useState(null);
+
+    const handleUpdateWeight = async (trip, uid, weight) => {
+        const num = parseFloat(weight);
+        if (num < 0) return alert("Weight cannot be negative");
+        
+        const newWeights = { ...(trip.memberWeights || {}) };
+        newWeights[uid] = num;
+
+        try {
+            await updateDoc(doc(db, "trips", trip.id), {
+                memberWeights: newWeights
+            });
+            // Update local state
+            setTrips(trips.map(t => t.id === trip.id ? { ...t, memberWeights: newWeights } : t));
+            setSelectedTrip({ ...trip, memberWeights: newWeights });
+            alert("Weight updated!");
+        } catch (e) {
+            alert(e.message);
+        }
+    };
+
+    const handleUpdateName = async (uid, currentName) => {
+        const newName = prompt("Enter new name for this user:", currentName);
+        if (!newName || newName === currentName) return;
+
+        try {
+            await updateDoc(doc(db, "users", uid), { name: newName });
+            // Update local state
+            setUsers(users.map(u => u.id === uid ? { ...u, name: newName } : u));
+            alert("Name updated successfully!");
+        } catch (e) {
+            alert("Error updating name: " + e.message);
+        }
+    };
 
     const handleLogin = (e) => {
         e.preventDefault();
@@ -155,7 +193,16 @@ const AdminDashboard = ({ onExit }) => {
                         <tbody>
                             {users.map(u => (
                                 <tr key={u.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                                    <td style={{ padding: '1rem' }}>{u.name}</td>
+                                    <td style={{ padding: '1rem', display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                        {u.name}
+                                        <button 
+                                            onClick={() => handleUpdateName(u.id, u.name)}
+                                            style={{ cursor: 'pointer', border: 'none', background: 'none', color: 'var(--text-accent)', padding: '4px' }}
+                                            title="Edit Name"
+                                        >
+                                            <Edit2 size={14} />
+                                        </button>
+                                    </td>
                                     <td style={{ padding: '1rem' }}>{u.gender}, {u.age}</td>
                                     <td style={{ padding: '1rem', fontFamily: 'monospace', fontSize: '0.8rem' }}>{u.id}</td>
                                     <td style={{ padding: '1rem', textAlign: 'right' }}>
@@ -168,28 +215,73 @@ const AdminDashboard = ({ onExit }) => {
                 )}
 
                 {activeTab === 'trips' && (
-                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                        <thead>
-                            <tr style={{ borderBottom: '1px solid white' }}>
-                                <th style={{ textAlign: 'left', padding: '1rem' }}>Trip Name</th>
-                                <th style={{ textAlign: 'left', padding: '1rem' }}>Members</th>
-                                <th style={{ textAlign: 'left', padding: '1rem' }}>Host ID</th>
-                                <th style={{ textAlign: 'right', padding: '1rem' }}>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {trips.map(t => (
-                                <tr key={t.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                                    <td style={{ padding: '1rem' }}>{t.name}</td>
-                                    <td style={{ padding: '1rem' }}>{t.members?.length || 0}</td>
-                                    <td style={{ padding: '1rem', fontFamily: 'monospace', fontSize: '0.8rem' }}>{t.hostId}</td>
-                                    <td style={{ padding: '1rem', textAlign: 'right' }}>
-                                        <button onClick={() => deleteTrip(t.id)} style={{ color: '#ff4d4d', background: 'transparent', border: '1px solid #ff4d4d', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer' }}>Delete</button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    <>
+                        {!selectedTrip ? (
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                    <tr style={{ borderBottom: '1px solid white' }}>
+                                        <th style={{ textAlign: 'left', padding: '1rem' }}>Trip Name</th>
+                                        <th style={{ textAlign: 'left', padding: '1rem' }}>Members</th>
+                                        <th style={{ textAlign: 'left', padding: '1rem' }}>Host ID</th>
+                                        <th style={{ textAlign: 'right', padding: '1rem' }}>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {trips.map(t => (
+                                        <tr key={t.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                                            <td style={{ padding: '1rem' }}>{t.name}</td>
+                                            <td style={{ padding: '1rem' }}>{t.members?.length || 0}</td>
+                                            <td style={{ padding: '1rem', fontFamily: 'monospace', fontSize: '0.8rem' }}>{t.hostId}</td>
+                                            <td style={{ padding: '1rem', textAlign: 'right', display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                                                <button onClick={() => setSelectedTrip(t)} style={{ color: '#4ade80', background: 'transparent', border: '1px solid #4ade80', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer' }}>Weights</button>
+                                                <button onClick={() => deleteTrip(t.id)} style={{ color: '#ff4d4d', background: 'transparent', border: '1px solid #ff4d4d', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer' }}>Delete</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <div>
+                                <button onClick={() => setSelectedTrip(null)} style={{ marginBottom: '1rem', background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}>← Back to Trips</button>
+                                <h2>Manage Weights: {selectedTrip.name}</h2>
+                                <p style={{ opacity: 0.7, marginBottom: '2rem' }}>Set multiplier for expense splitting (1 = Standard, 0.5 = Half Share, 2 = Double Share).</p>
+                                
+                                <div style={{ display: 'grid', gap: '1rem' }}>
+                                    {selectedTrip.members.map(uid => {
+                                        const userObj = users.find(u => u.id === uid);
+                                        const currentWeight = (selectedTrip.memberWeights && selectedTrip.memberWeights[uid] !== undefined) ? selectedTrip.memberWeights[uid] : 1;
+                                        
+                                        return (
+                                            <div key={uid} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '8px' }}>
+                                                <div>
+                                                    <div style={{ fontWeight: 'bold' }}>{userObj ? userObj.name : 'Unknown User'}</div>
+                                                    <div style={{ fontSize: '0.8rem', opacity: 0.5 }}>{uid}</div>
+                                                </div>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                                    <input 
+                                                        type="number" 
+                                                        step="0.1" 
+                                                        defaultValue={currentWeight} 
+                                                        id={`weight-${uid}`}
+                                                        style={{ width: '80px', padding: '0.5rem', borderRadius: '4px', border: 'none' }}
+                                                    />
+                                                    <button 
+                                                        onClick={() => {
+                                                            const val = document.getElementById(`weight-${uid}`).value;
+                                                            handleUpdateWeight(selectedTrip, uid, val);
+                                                        }}
+                                                        className="btn-primary"
+                                                    >
+                                                        Save
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                        )}
+                    </>
                 )}
 
                 {activeTab === 'system' && (

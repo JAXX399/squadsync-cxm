@@ -47,6 +47,9 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [statuses, setStatuses] = useState({});
 
+  const [usersMap, setUsersMap] = useState({});
+  const [rawStatuses, setRawStatuses] = useState([]);
+
   // 1. Auth Listener
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -72,6 +75,19 @@ function App() {
     return unsubscribe;
   }, []);
 
+  // 1.5 Global Users Listener (For Name Resolution)
+  useEffect(() => {
+    const q = query(collection(db, "users"));
+    const unsub = onSnapshot(q, (snap) => {
+        const map = {};
+        snap.forEach(d => {
+            map[d.id] = d.data();
+        });
+        setUsersMap(map);
+    });
+    return () => unsub();
+  }, []);
+
   // 2. Statuses Listener (Scoped to Current Trip)
   useEffect(() => {
     if (!user || !currentTrip) return;
@@ -80,19 +96,57 @@ function App() {
     const q = query(collection(db, "statuses"), where("tripId", "==", currentTrip.id));
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const newStatuses = {};
+      const raw = [];
       snapshot.forEach((doc) => {
-        const data = doc.data();
-        if (!newStatuses[data.date]) {
-          newStatuses[data.date] = [];
-        }
-        newStatuses[data.date].push(data);
+        raw.push(doc.data());
       });
-      setStatuses(newStatuses);
+      setRawStatuses(raw);
     });
 
     return unsubscribe;
   }, [user, currentTrip]);
+
+  // 2.5 Compute Grouped Statuses with Live Names
+  useEffect(() => {
+      const newStatuses = {};
+      rawStatuses.forEach(status => {
+          const freshUser = usersMap[status.userId];
+          const displayName = freshUser ? freshUser.name : status.userName;
+          
+          const enhancedStatus = { ...status, userName: displayName };
+
+          if (!newStatuses[status.date]) {
+              newStatuses[status.date] = [];
+          }
+          newStatuses[status.date].push(enhancedStatus);
+      });
+      setStatuses(newStatuses);
+  }, [rawStatuses, usersMap]);
+
+  // 3. Current Trip Live Listener (For Weights/Invites updates)
+  useEffect(() => {
+    if (!currentTrip?.id) return;
+
+    const unsubTrip = onSnapshot(doc(db, "trips", currentTrip.id), (docSnap) => {
+      if (docSnap.exists()) {
+        const newData = { id: docSnap.id, ...docSnap.data() };
+        // avoid infinite loop/unnecessary renders if deep equal? 
+        // For simple object, setState is fine, React mostly handles it, 
+        // but let's just set it. Logic in Expenses depends on memberWeights changing.
+        setCurrentTrip(prev => {
+             if (JSON.stringify(prev) !== JSON.stringify(newData)) {
+                 return newData; 
+             }
+             return prev;
+        });
+      } else {
+        // Trip deleted?
+        setCurrentTrip(null);
+      }
+    });
+
+    return () => unsubTrip();
+  }, [currentTrip?.id]);
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
@@ -145,9 +199,11 @@ function App() {
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <h2 style={{ fontSize: '2rem', fontWeight: 300, lineHeight: 1 }}>
-              {currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
-            </h2>
+            {currentView === 'calendar' && (
+              <h2 style={{ fontSize: '2rem', fontWeight: 300, lineHeight: 1 }}>
+                {currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
+              </h2>
+            )}
             <span style={{ color: 'var(--text-accent)', fontSize: '0.9rem', fontWeight: 'bold' }}>{currentTrip.name}</span>
           </div>
 
@@ -157,10 +213,13 @@ function App() {
               <span style={{ fontSize: '0.9rem' }}>{userProfile.name}</span>
             </div>
 
-            <div style={{ width: '1px', height: '24px', background: 'var(--glass-border)', margin: '0 8px' }}></div>
-
-            <button className="btn-icon" onClick={() => handleMonthChange(-1)}>&lt;</button>
-            <button className="btn-icon" onClick={() => handleMonthChange(1)}>&gt;</button>
+            {currentView === 'calendar' && (
+              <>
+                <div style={{ width: '1px', height: '24px', background: 'var(--glass-border)', margin: '0 8px' }}></div>
+                <button className="btn-icon" onClick={() => handleMonthChange(-1)}>&lt;</button>
+                <button className="btn-icon" onClick={() => handleMonthChange(1)}>&gt;</button>
+              </>
+            )}
           </div>
         </div>
 

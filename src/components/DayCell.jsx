@@ -33,7 +33,7 @@ const DayCell = ({ date, isCurrentMonth, statusList = [], onClick, isSelected })
             onMouseEnter={(e) => !isSelected && (e.currentTarget.style.background = 'var(--glass-highlight)')}
             onMouseLeave={(e) => !isSelected && (e.currentTarget.style.background = 'var(--glass-surface)')}
         >
-            <span style={{
+            <span className="day-number" style={{
                 fontWeight: isSelected ? '700' : '400',
                 color: isSelected ? 'var(--text-accent)' : 'var(--text-primary)',
                 alignSelf: 'flex-end',
@@ -43,52 +43,56 @@ const DayCell = ({ date, isCurrentMonth, statusList = [], onClick, isSelected })
                 {date.getDate()}
             </span>
 
-            {/* Status Pills */}
-            <div className="status-list" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            {/* Status Container */}
+            <div className="status-dots-container" style={{ width: '100%' }}>
                 {statusList.map((status, idx) => {
-                    // User Identity Color
                     const userColor = stringToColor(status.userName || 'Unknown');
-                    // Status Signal Color
                     const statusSignal = status.type === 'free' ? 'var(--status-free)' : 'var(--status-busy)';
 
                     return (
-                        <div
-                            key={idx}
-                            title={`${status.userName}: ${status.reason || status.type}`}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '6px',
-                                padding: '2px 6px',
-                                borderRadius: '12px',
-                                background: 'rgba(255,255,255,0.1)',
-                                borderLeft: `3px solid ${statusSignal}`,
-                                fontSize: '0.75rem',
-                                overflow: 'hidden',
-                                whiteSpace: 'nowrap'
-                            }}
-                        >
-                            {/* User Avatar Dot */}
-                            <div style={{
-                                width: '16px',
-                                height: '16px',
-                                borderRadius: '50%',
-                                background: userColor,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                fontSize: '10px',
-                                fontWeight: 'bold',
-                                color: '#fff',
-                                flexShrink: 0
-                            }}>
-                                {status.userName ? status.userName.substring(0, 2).toUpperCase() : '?'}
-                            </div>
+                        <React.Fragment key={idx}>
+                            {/* Mobile Dot */}
+                            <div className="status-dot" style={{ background: statusSignal }}></div>
 
-                            <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', color: 'var(--text-secondary)' }}>
-                                {status.reason || status.type}
-                            </span>
-                        </div>
+                            {/* Desktop/Tablet Pill */}
+                            <div
+                                className="status-name"
+                                title={`${status.userName}: ${status.reason || status.type}`}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    padding: '2px 6px',
+                                    borderRadius: '12px',
+                                    background: 'rgba(255,255,255,0.1)',
+                                    borderLeft: `3px solid ${statusSignal}`,
+                                    fontSize: '0.75rem',
+                                    overflow: 'hidden',
+                                    whiteSpace: 'nowrap',
+                                    width: '100%',
+                                    marginBottom: '4px'
+                                }}
+                            >
+                                <div style={{
+                                    width: '16px',
+                                    height: '16px',
+                                    borderRadius: '50%',
+                                    background: userColor,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '10px',
+                                    fontWeight: 'bold',
+                                    color: '#fff',
+                                    flexShrink: 0
+                                }}>
+                                    {status.userName ? status.userName.substring(0, 2).toUpperCase() : '?'}
+                                </div>
+                                <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', color: 'var(--text-secondary)' }}>
+                                    {status.reason || status.type}
+                                </span>
+                            </div>
+                        </React.Fragment>
                     );
                 })}
             </div>

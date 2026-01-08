@@ -1,15 +1,8 @@
 # SquadSync 🌍✈️
 
-**The ultimate collaborative trip planner for you and your squad.**
+> **The Ultimate Collaborative Trip Planner & Expense Tracker**
 
-SquadSync transforms chaotic group chat planning into a sleek, real-time dashboard. Coordinate availability, manage multiple trips, and sync up with your friends efficiently.
-
-# Squad Sync 🌍✈️
-> **The Ultimate Group Trip Planner & Expense Tracker**
-
-**Squad Sync** is a modern, real-time collaboration tool designed to make group travel seamless. From coordinating availabilities on a shared calendar to splitting costs with an intelligent debt settlement algorithm, Squad Sync keeps your trip organized and your friendships intact.
-
----
+SquadSync transforms chaotic group travel into a seamless, real-time experience. From coordinating availability on a shared calendar to splitting complex expenses with weights and settlements, SquadSync keeps your trip organized and your friendships intact.
 
 ## 🚀 Live Demo
 **[Launch App](https://squadsync-cxm.vercel.app/)**
@@ -21,33 +14,67 @@ SquadSync transforms chaotic group chat planning into a sleek, real-time dashboa
 ### 🗓️ Smart Calendar
 *   **Real-time Availability**: Statuses (Available, Busy, Maybe) sync instantly across all devices.
 *   **Heatmap Visualization**: Easily spot the best dates for the whole group.
-*   **Interactive UI**: "Black Marble" glassmorphism design with fluid animations.
+*   **Global Name Sync**: User renames reflect instantly on all past and future notes.
 
-### 💸 Intelligent Expense Tracking (New!)
-*   **Group Split**: Log expenses in multiple currencies (USD, EUR, GBP, etc.).
-*   **Debt Settlement Engine**: Automatically calculates **"Who Owes Whom"** to simplify payback.
-    *   *Example: "John pays Sarah $50"* instead of confusing spreadsheets.
-*   **Live Balances**: See your net standing (Owed vs. Owe) in real-time.
+### 💸 Advanced Expense Tracking
+*   **Smart Splits**: Log expenses in any currency (USD, EUR, INR, GBP, JPY).
+*   **Weighted Splitting**: Admin can assign weights (e.g., User A pays 2x) for fair cost distribution.
+*   **Settlement Engine**: 
+    *   **Event-Based**: Mark specific debts as "Paid" within a trip.
+    *   **Direct Payments**: Track independent P2P transfers in your personal wallet.
+*   **Payment Methods**: Share and view **UPI IDs** and payment notes directly in the app.
 
-### 👥 Group Management
-*   **Trip IDs**: Join trips instantly by sharing a unique 6-character code.
-*   **Admin Dashboard**: Powerful controls to manage users, wipe data, or reset calendars (`cxm123`).
-*   **Secure Authentication**: Powered by Firebase & Google Sign-In.
+### � Profile & Wallet
+*   **My Wallet**: A personal dashboard showing your net financial standing across *all* trips.
+*   **Direct Actions**: "Mark Paid" or "Delete" payment records with a single click.
+*   **Visual Feedback**: Beautiful "PAID" badges and transitions.
+
+### �️ Admin Portal
+*   **User Management**: Rename users globally (fixing typos or updating aliases).
+*   **Avada Kedavra**: Instantly wipe all trip data for a fresh start.
+*   **Weight Management**: Adjust split ratios for specific trips.
+
+---
+
+## � Future Roadmap (Recommendations)
+Here are some features that could take SquadSync to the next level:
+
+1.  **🤖 AI Itinerary Generator**  
+    *   *Idea*: Use Gemini API to generate daily itineraries based on the group's destination and dates.
+    *   *Why*: Fills the gap between "planning dates" and "tracking expenses".
+
+2.  **� Real-time Trip Chat**  
+    *   *Idea*: A dedicated chat room for each trip so you don't have to switch to WhatsApp.
+    *   *Why*: Keeps context (e.g., discussing a specific expense) in one place.
+
+3.  **🗳️ Polls for Decision Making**  
+    *   *Idea*: Simple voting for "Where to eat?" or "Which Airbnb?".
+    *   *Why*: Faster consensus than endless chat debates.
+
+4.  **🧾 AI Receipt Scanning**  
+    *   *Idea*: Upload a photo of a bill, and OCR extracts the items and prices.
+    *   *Why*: Reduces manual entry friction for long restaurant bills.
+
+5.  **📍 Map Integration**  
+    *   *Idea*: Pin locations (Hotel, Spots) on a shared map.
+    *   *Why*: Visualizes the trip logistics.
 
 ---
 
 ## 🛠️ Tech Stack
-*   **Frontend**: React.js (Vite), Glassmorphism UI
+*   **Frontend**: React.js (Vite), Glassmorphism UI, Framer Motion
 *   **Backend**: Firebase (Firestore, Auth)
+*   **Icons**: Lucide React
 *   **Deployment**: Vercel
 
 ---
 
 ## 📦 Installation
+
 1.  **Clone the repo**
     ```bash
-    git clone https://github.com/JAXX399/squadsync-cxm.git
-    cd squadsync-cxm
+    git clone https://github.com/yourusername/squadsync.git
+    cd squadsync
     ```
 2.  **Install dependencies**
     ```bash
@@ -58,77 +85,10 @@ SquadSync transforms chaotic group chat planning into a sleek, real-time dashboa
     npm run dev
     ```
 
-## 🔐 Admin Access
-*   **Password**: *Check source code or ask admin*
-*   **Capabilities**: Wipe all expenses, reset calendars, remove users.
+## � Admin Access
+*   **Password**: `cxm123` (Default)
+*   **Access**: Click "Admin Portal" in the Dashboard footer.
 
 ---
 
-Made with ❤️ by JAXX399
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js (v16+)
-- A Google Firebase Project (Free Tier)
-
-### Installation
-
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/yourusername/squadsync.git
-    cd squadsync
-    ```
-
-2.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
-
-3.  **Configure Firebase:**
-    - Create a project at [firebase.google.com](https://console.firebase.google.com/).
-    - Enable **Authentication** (Google Provider).
-    - Enable **Firestore Database**.
-    - Copy your config keys into `src/firebase.js`:
-    ```javascript
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT.appspot.com",
-      messagingSenderId: "...",
-      appId: "..."
-    };
-    ```
-
-4.  **Run the development server:**
-    ```bash
-    npm run dev
-    ```
-
-## 🛡️ Admin Access
-
-Scale your community management with the built-in Admin Portal.
-- **Access**: Click "Admin Access" in the dashboard footer.
-- **Default Password**: *Check source code or ask admin* (Change this in `src/components/AdminDashboard.jsx`).
-- **Capabilities**:
-    - ⚡ **Avada Kedavra**: Instantly wipe all data for a fresh start.
-    - 🗑️ **User/Trip Deletion**: maintain community standards.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1.  Fork the project
-2.  Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3.  Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4.  Push to the branch (`git push origin feature/AmazingFeature`)
-5.  Open a Pull Request
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
----
 *Built with ❤️ by Israr*

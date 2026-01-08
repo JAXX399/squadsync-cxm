@@ -15,3 +15,164 @@
   margin-bottom: var(--spacing-xl);
   padding: var(--spacing-md);
 }
+
+/* Expenses Layout Defaults (Desktop) */
+.expenses-container {
+  display: flex;
+  gap: 1.5rem;
+  height: 100%;
+}
+
+.expenses-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.expenses-sidebar {
+  width: 320px;
+}
+
+/* Mobile Responsiveness (Intelligent Revamp) */
+@media (max-width: 768px) {
+  /* GLOBAL FIXES */
+  .app-container {
+    padding: var(--spacing-sm);
+    height: auto; /* Allow scroll */
+    min-height: 100vh;
+  }
+  
+  .glass-panel {
+    padding: 1rem !important;
+  }
+
+  /* LAYOUT STACKING */
+  .main-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .sidebar {
+    width: 100% !important;
+    height: auto;
+    position: relative;
+    margin-bottom: 1rem;
+  }
+
+  /* EXPENSES REVAMP */
+  .expenses-container {
+    flex-direction: column;
+  }
+
+  .expenses-sidebar {
+    width: 100% !important;
+    order: 2; /* Move form to bottom so user sees list first */
+  }
+
+  .expenses-content {
+    order: 1;
+  }
+
+  /* DASHBOARD REVAMP */
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .dashboard-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .dashboard-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .trip-card-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* PROFILE DASHBOARD REVAMP */
+  .profile-container {
+    flex-direction: column !important;
+    height: auto !important;
+    overflow-y: auto !important;
+    padding: 1rem !important;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .profile-balance-cards {
+    width: 100%;
+    justify-content: space-between;
+    overflow-x: auto; /* Scroll if many currencies */
+  }
+
+  .profile-content-wrapper {
+    flex-direction: column !important;
+    overflow: visible !important;
+  }
+
+  .profile-section {
+    width: 100% !important;
+    flex: none !important;
+    min-height: fit-content;
+  }
+
+  /* CALENDAR CONDENSED VIEW */
+  .calendar-container {
+    height: auto !important;
+  }
+  
+  .week-header {
+    font-size: 0.7rem;
+  }
+
+  .day-cell {
+    height: 60px !important; /* Smaller height */
+    padding: 4px !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .day-number {
+    font-size: 0.9rem !important;
+    margin-bottom: 4px;
+  }
+
+  /* Hide full names on mobile */
+  .status-name {
+    display: none !important;
+  }
+
+  /* Show dots instead */
+  .status-dot {
+    display: block !important;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin: 1px;
+  }
+  
+  .status-dots-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2px;
+  }
+}
+
+/* Base Classes for switching (Desktop Defaults) */
+.status-dot { display: none; }
+.status-name { display: block; }
+.profile-container { display: flex; flex-direction: column; }
+.profile-content-wrapper { display: flex; gap: 2rem; flex: 1; overflow: hidden; }
+.dashboard-actions { display: flex; gap: 1rem; }
+.trip-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; }
